@@ -9,8 +9,6 @@ services:
       - SERVER_NAME=${DOMAIN?Variable not set}
       - SERVER_HOST=https://${DOMAIN?Variable not set}
       - PORT=${PORT}
-    depends_on:
-      - db
     build:
       context: .
       dockerfile: Dockerfile
