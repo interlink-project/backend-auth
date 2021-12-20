@@ -7,9 +7,9 @@ services:
     volumes:
       - .:/app
     environment:
-      - SERVER_HOST=http://${DOMAIN?Variable not set}
+      - SERVER_HOST=http://${DOMAIN?Variable not set}/auth
       - PORT=${PORT}
-      - BASE_PATH=/auth
+      - BASE_PATH=/auth/
     build:
       context: .
       dockerfile: Dockerfile

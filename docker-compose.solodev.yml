@@ -6,9 +6,9 @@ services:
     volumes:
       - .:/app
     environment:
-      - SERVER_HOST=http://${DOMAIN?Variable not set}
+      - SERVER_HOST=http://${DOMAIN?Variable not set}:${SOLODEVPORT}
       - PORT
-      - BASE_PATH=
+      - BASE_PATH=/
     build:
       context: .
       dockerfile: Dockerfile

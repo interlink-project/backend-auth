@@ -36,6 +36,6 @@ class Settings(BaseSettings):
     # "http://localhost:8080", "http://local.dockertoolbox.tiangolo.com"]'
     BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = []
     PROJECT_NAME = "Auth API"
-    BASE_PATH: str = ""
+    BASE_PATH: str = "/"
 
 settings = Settings()

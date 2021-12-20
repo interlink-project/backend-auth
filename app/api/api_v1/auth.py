@@ -14,12 +14,13 @@ router = APIRouter()
 @router.get("/login")
 async def login(
     request: Request,
-    redirect_on_callback: str = f"{settings.BASE_PATH}/docs",
+    redirect_on_callback: str = f"{settings.BASE_PATH}docs",
     current_user: Union[dict, None] = Depends(deps.get_current_user),
 ):
     
     if not current_user:
-        redirect_uri = request.url_for('callback')
+        # redirect_uri = request.url_for('callback')
+        redirect_uri = f"{settings.SERVER_HOST}/callback"
         response = await oauth.smartcommunitylab.authorize_redirect(request, redirect_uri)
         response.set_cookie(
             key="redirect_on_callback",
@@ -54,12 +55,11 @@ async def callback(request: Request, redirect_on_callback: Optional[str] = Cooki
         # print(user)
         return response
     except Exception as e:
-        print(f"ERROR {str(e)}")
         return e
 
 
 @router.get("/logout")
-async def logout(redirect_on_callback: str = "/"):
+async def logout(redirect_on_callback: str = f"{settings.BASE_PATH}"):
     response = RedirectResponse(url=redirect_on_callback)
     response.delete_cookie(key="auth_token")
     # TODO: get token and call revocation
