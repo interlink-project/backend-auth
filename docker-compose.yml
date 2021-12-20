@@ -1,0 +1,33 @@
+version: "3.3"
+services:
+  auth:
+    image: 'authprod:${TAG-latest}'
+    container_name: auth-prod
+    env_file:
+      - .env
+    environment:
+      - SERVER_NAME=${DOMAIN?Variable not set}
+      - SERVER_HOST=https://${DOMAIN?Variable not set}
+      - PORT=${PORT}
+    depends_on:
+      - db
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        INSTALL_DEV: ${INSTALL_DEV-false}
+    deploy:
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=traefik-public
+        - traefik.http.routers.${STACK_NAME?Variable not set}-auth-http.rule=PathPrefix(`/auth`)
+        - traefik.http.services.${STACK_NAME?Variable not set}-auth.loadbalancer.server.port=${PORT}
+        - traefik.http.routers.${STACK_NAME?Variable not set}-auth-http.middlewares=auth-stripprefix
+        - traefik.http.middlewares.auth-stripprefix.stripprefix.prefixes=/auth
+    networks:
+      - traefik-public
+      - default
+
+networks:
+  traefik-public:
+    external: true
