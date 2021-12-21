@@ -59,7 +59,7 @@ async def callback(request: Request, redirect_on_callback: Optional[str] = Cooki
 
 
 @router.get("/logout")
-async def logout(redirect_on_callback: str = settings.BASE_PATH or "/"):
+async def logout(redirect_on_callback: str = f"{settings.BASE_PATH}/login"):
     response = RedirectResponse(url=redirect_on_callback)
     response.delete_cookie(key="auth_token")
     # TODO: get token and call revocation
