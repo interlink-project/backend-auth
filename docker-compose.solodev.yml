@@ -16,5 +16,3 @@ services:
         INSTALL_DEV: ${INSTALL_DEV-true}
     ports:
       - "${SOLODEVPORT}:${PORT}"
-    networks:
-      - default
