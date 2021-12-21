@@ -24,8 +24,6 @@ services:
         - traefik.http.middlewares.auth-stripprefix.stripprefix.prefixes=/auth
     networks:
       - traefik-public
-      - default
-
 networks:
   traefik-public:
     external: true
