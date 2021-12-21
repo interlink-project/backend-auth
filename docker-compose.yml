@@ -20,8 +20,6 @@ services:
         - traefik.docker.network=traefik-public
         - traefik.http.routers.${STACK_NAME?Variable not set}-auth-http.rule=PathPrefix(`/auth`)
         - traefik.http.services.${STACK_NAME?Variable not set}-auth.loadbalancer.server.port=${PORT}
-        - traefik.http.routers.${STACK_NAME?Variable not set}-auth-http.middlewares=auth-stripprefix
-        - traefik.http.middlewares.auth-stripprefix.stripprefix.prefixes=/auth
     networks:
       - traefik-public
 networks:

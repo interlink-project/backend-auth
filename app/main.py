@@ -4,9 +4,10 @@ from starlette.middleware.cors import CORSMiddleware
 from app.api.api_v1.auth import router as authrouter
 from app.config import settings
 
-# not using root_path because oidc returns redirect_uri mismatch
+# BASE PATH can be "" or "/auth"
+# not using root_path because oidc returns redirect_uri mismatch openapi_prefix=settings.BASE_PATH, 
 app = FastAPI(
-    title=settings.PROJECT_NAME, openapi_url=f"/openapi.json", openapi_prefix=settings.BASE_PATH, docs_url=f"/docs"
+    title=settings.PROJECT_NAME, openapi_url=f"{settings.BASE_PATH}/openapi.json", docs_url=f"{settings.BASE_PATH}/docs"
 )
 
 # Set all CORS enabled origins
@@ -20,13 +21,13 @@ if settings.BACKEND_CORS_ORIGINS:
         allow_headers=["*"],
     )
 
-app.include_router(authrouter, tags=["auth"])
+app.include_router(authrouter, prefix=settings.BASE_PATH, tags=["auth"])
 
-@app.get(f"/")
+@app.get(f"{settings.BASE_PATH}/")
 def main():
-    return RedirectResponse(url=f"{settings.BASE_PATH}docs")
+    return RedirectResponse(url=f"{settings.BASE_PATH}/docs")
 
-@app.get(f"/healthcheck/")
+@app.get(f"{settings.BASE_PATH}/healthcheck/")
 def healthcheck():
     return True
 
