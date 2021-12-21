@@ -9,7 +9,7 @@ services:
     environment:
       - SERVER_HOST=http://${DOMAIN?Variable not set}/auth
       - PORT=${PORT}
-      - BASE_PATH=/auth/
+      - BASE_PATH=/auth
     build:
       context: .
       dockerfile: Dockerfile
@@ -20,6 +20,4 @@ services:
       - traefik.docker.network=traefik-public
       - traefik.http.routers.${STACK_NAME?Variable not set}-auth-http.rule=PathPrefix(`/auth`)
       - traefik.http.services.${STACK_NAME?Variable not set}-auth.loadbalancer.server.port=${PORT}
-      - traefik.http.routers.${STACK_NAME?Variable not set}-auth-http.middlewares=auth-stripprefix
-      - traefik.http.middlewares.auth-stripprefix.stripprefix.prefixes=/auth
 
