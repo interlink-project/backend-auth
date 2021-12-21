@@ -12,8 +12,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      args:
-        INSTALL_DEV: ${INSTALL_DEV-false}
+      target: prod
     deploy:
       labels:
         - traefik.enable=true
