@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
 from starlette.middleware.cors import CORSMiddleware
 from app.api.api_v1.auth import router as authrouter
+from app.api.api_v1.users import router as usersrouter
 from app.config import settings
 
 # BASE PATH can be "" or "/auth"
@@ -22,6 +23,7 @@ if settings.BACKEND_CORS_ORIGINS:
     )
 
 app.include_router(authrouter, prefix=settings.BASE_PATH, tags=["auth"])
+app.include_router(usersrouter, prefix=f"{settings.BASE_PATH}{settings.API_V1_STR}/users", tags=["users"])
 
 @app.get(f"{settings.BASE_PATH}/")
 def main():

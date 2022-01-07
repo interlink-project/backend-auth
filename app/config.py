@@ -28,7 +28,7 @@ class Settings(BaseSettings):
     CLIENT_SECRET: str
     SERVER_METADATA_URL: str
 
-    API_V1_STR: str = "/auth/api/v1"
+    API_V1_STR: str = "/api/v1"
     
     PROJECT_NAME = "Auth API"
     BASE_PATH: str = "/"
