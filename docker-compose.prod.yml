@@ -7,8 +7,9 @@ services:
       - .env
     environment:
       - SERVER_NAME=${DOMAIN?Variable not set}
-      - SERVER_HOST=https://${DOMAIN?Variable not set}
+      - SERVER_HOST=https://${DOMAIN?Variable not set}/auth
       - PORT=${PORT}
+      - BASE_PATH=/auth
     build:
       context: .
       dockerfile: Dockerfile
@@ -21,6 +22,7 @@ services:
         - traefik.http.services.${STACK_NAME?Variable not set}-auth.loadbalancer.server.port=${PORT}
     networks:
       - traefik-public
+
 networks:
   traefik-public:
     external: true
