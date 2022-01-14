@@ -6,7 +6,10 @@ services:
     container_name: auth-integrated
     volumes:
       - .:/app
+    env_file:
+      - .env
     environment:
+      - SERVER_NAME=${DOMAIN?Variable not set}
       - SERVER_HOST=http://${DOMAIN?Variable not set}/auth
       - PORT=${PORT}
       # behind proxy
@@ -18,6 +21,13 @@ services:
     labels:
       - traefik.enable=true
       - traefik.docker.network=traefik-public
-      - traefik.http.routers.${STACK_NAME?Variable not set}-auth-http.rule=PathPrefix(`/auth`)
-      - traefik.http.services.${STACK_NAME?Variable not set}-auth.loadbalancer.server.port=${PORT}
+      - traefik.http.routers.${STACK_NAME?Variable not
+        set}-auth-http.rule=PathPrefix(`/auth`)
+      - traefik.http.services.${STACK_NAME?Variable not
+        set}-auth.loadbalancer.server.port=${PORT}
+    networks:
+      - traefik-public
 
+networks:
+  traefik-public:
+    external: true
