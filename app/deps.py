@@ -2,6 +2,7 @@ from typing import Generator
 
 from fastapi import Depends, HTTPException, Request
 from app.authentication import decode_token
+from app import crud
 
 def get_token_in_cookie(request):
     try:
@@ -21,14 +22,15 @@ def get_current_token(
         state = request.state._state
         return state["token"]
 
-def get_current_user(
+async def get_current_user(
     request: Request,
 ) -> dict:
     try:
         token = get_token_in_cookie(request) or get_token_in_header(request)
         # gets user_data from state (see AuthMiddleware)
         if token:
-            user = decode_token(token)
+            token_info = decode_token(token)
+            user = await crud.get_or_create(token_info)
             print(user["email"])
             return user
         return None

@@ -4,7 +4,7 @@ from fastapi import APIRouter, Cookie, Depends, Request
 from fastapi.responses import RedirectResponse
 from starlette.requests import Request
 
-from app import deps
+from app import deps, crud
 from app.authentication import decode_token, oauth
 from app.config import settings
 
@@ -39,6 +39,9 @@ async def login(
 async def callback(request: Request, redirect_on_callback: Optional[str] = Cookie(None)):
     try:
         token = await oauth.smartcommunitylab.authorize_access_token(request)
+        user_info = decode_token(token["access_token"])
+        await crud.login(user_info)
+
         response = RedirectResponse(redirect_on_callback)        
         
         response.set_cookie(
@@ -55,7 +58,7 @@ async def callback(request: Request, redirect_on_callback: Optional[str] = Cooki
         # print(user)
         return response
     except Exception as e:
-        return e
+        raise e
 
 
 @router.get("/logout")
