@@ -1,6 +1,5 @@
 version: "3.3"
 services:
-
   auth:
     image: 'authdev:${TAG-latest}'
     container_name: auth-integrated
@@ -14,6 +13,8 @@ services:
       - PORT=${PORT}
       # behind proxy
       - BASE_PATH=/auth
+      - MONGODB_URL=mongodb://user:userpass@mongodb:27017/data?retryWrites=true&w=majority
+
     build:
       context: .
       dockerfile: Dockerfile
