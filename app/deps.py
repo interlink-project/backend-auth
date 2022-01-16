@@ -30,9 +30,7 @@ async def get_current_user(
         # gets user_data from state (see AuthMiddleware)
         if token:
             token_info = decode_token(token)
-            user = await crud.get_or_create(token_info)
-            print(user["email"])
-            return user
+            return await crud.get_or_create(token_info)
         return None
     except Exception as e:
         print(str(e))
