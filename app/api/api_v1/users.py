@@ -19,6 +19,8 @@ async def retrieve(
     current_user: dict = Depends(deps.get_current_active_user),
 ) -> Any:
     user = await crud.get(id)
+    if not user:
+        raise HTTPException(status_code=404, detail=f"User with id '{id}' not found")
     return user
 
 @router.get("/")
