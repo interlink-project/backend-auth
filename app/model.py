@@ -1,11 +1,12 @@
 from datetime import datetime
 from pydantic import BaseModel, Field
+from typing import Optional
 
 class UserSchema(BaseModel):
     id: str = Field(..., alias='_id')
-    preferred_username: str
-    picture: str
-    given_name: str
-    family_name: str
-    email: str
+    preferred_username: Optional[str]
+    picture: Optional[str]
+    given_name: Optional[str]
+    family_name: Optional[str]
+    email: Optional[str]
     last_login: datetime
