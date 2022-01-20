@@ -3,6 +3,7 @@ from typing import Generator
 from fastapi import Depends, HTTPException, Request
 from app.authentication import decode_token
 from app import crud
+from app.database import AsyncIOMotorCollection, get_collection
 
 def get_token_in_cookie(request):
     try:
@@ -24,13 +25,14 @@ def get_current_token(
 
 async def get_current_user(
     request: Request,
+   collection: AsyncIOMotorCollection = Depends(get_collection)
 ) -> dict:
     try:
         token = get_token_in_cookie(request) or get_token_in_header(request)
         # gets user_data from state (see AuthMiddleware)
         if token:
             token_info = decode_token(token)
-            return await crud.get_or_create(token_info)
+            return await crud.get_or_create(collection,token_info)
         return None
     except Exception as e:
         print(str(e))

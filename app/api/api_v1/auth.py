@@ -7,6 +7,7 @@ from starlette.requests import Request
 from app import deps, crud
 from app.authentication import decode_token, oauth
 from app.config import settings
+from app.database import AsyncIOMotorCollection, get_collection
 
 router = APIRouter()
 
@@ -36,11 +37,11 @@ async def login(
         return RedirectResponse(redirect_on_callback)
 
 @router.get("/callback")
-async def callback(request: Request, redirect_on_callback: Optional[str] = Cookie(None)):
+async def callback(request: Request, redirect_on_callback: Optional[str] = Cookie(None),collection: AsyncIOMotorCollection = Depends(get_collection)):
     try:
         token = await oauth.smartcommunitylab.authorize_access_token(request)
         user_info = decode_token(token["access_token"])
-        await crud.login(user_info)
+        await crud.login(collection, user_info)
 
         response = RedirectResponse(redirect_on_callback)        
         

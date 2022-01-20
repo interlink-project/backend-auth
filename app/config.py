@@ -17,6 +17,7 @@ class Settings(BaseSettings):
     BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = []
 
     MONGODB_URL: str
+    DATABASE_NAME: str
     COLLECTION_NAME: str
     
     @validator("BACKEND_CORS_ORIGINS", pre=True)
