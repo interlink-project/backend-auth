@@ -37,7 +37,7 @@ async def login(
         return RedirectResponse(redirect_on_callback)
 
 @router.get("/callback")
-async def callback(request: Request, redirect_on_callback: Optional[str] = Cookie(None),collection: AsyncIOMotorCollection = Depends(get_collection)):
+async def callback(request: Request, redirect_on_callback: Optional[str] = Cookie(None), collection: AsyncIOMotorCollection = Depends(get_collection)):
     try:
         token = await oauth.smartcommunitylab.authorize_access_token(request)
         user_info = decode_token(token["access_token"])
