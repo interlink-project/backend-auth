@@ -17,7 +17,7 @@ oauth.register(
     client_secret=settings.CLIENT_SECRET,
     server_metadata_url=settings.SERVER_METADATA_URL,
     client_kwargs={
-        'scope': 'openid profile email offline_access'
+        'scope': 'openid profile email'
     }
 )
 
