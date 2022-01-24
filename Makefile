@@ -29,7 +29,7 @@ prodbuild: ## Builds production containers
 #######################
 .PHONY: solo
 solo: down ## Starts solo development containers
-	docker-compose -f docker-compose.devsolo.yml --env-file=.env.solo up -d
+	docker-compose -f docker-compose.devsolo.yml --env-file .env.solo up -d
 
 .PHONY: integrated
 integrated: down ## Starts integrated development containers
