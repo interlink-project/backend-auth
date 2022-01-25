@@ -22,7 +22,7 @@ services:
     
   mongodb:
     image: bitnami/mongodb:latest
-    container_name: googledrive-mongodb
+    container_name: auth-mongodb
     env_file:
       - .env.solo
     healthcheck:
