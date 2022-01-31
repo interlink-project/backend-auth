@@ -29,7 +29,7 @@ if settings.BACKEND_CORS_ORIGINS:
 def main():
     return RedirectResponse(url=f"{settings.BASE_PATH}/docs")
 
-@app.get(f"{settings.BASE_PATH}/healthcheck/")
+@app.get(f"{settings.BASE_PATH}/healthcheck")
 def healthcheck():
     return True
 
