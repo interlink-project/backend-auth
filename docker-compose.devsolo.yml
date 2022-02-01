@@ -7,6 +7,7 @@ services:
       - .:/app
     env_file:
       - .env.solo
+      - .secrets
     environment:
       - SERVER_NAME=${DOMAIN?Variable not set}
       - SERVER_HOST=http://${DOMAIN?Variable not set}:${SOLODEVPORT}
