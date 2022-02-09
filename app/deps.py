@@ -29,7 +29,6 @@ async def get_current_user(
 ) -> dict:
     try:
         token = get_token_in_cookie(request) or get_token_in_header(request)
-        # gets user_data from state (see AuthMiddleware)
         if token:
             token_info = decode_token(token)
             return await crud.get_or_create(collection,token_info)

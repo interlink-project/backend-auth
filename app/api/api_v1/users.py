@@ -7,7 +7,7 @@ from app import deps, crud
 
 router = APIRouter()
 
-@router.get("/me/")
+@router.get("/me", response_model=crud.User)
 def me(
     current_user: dict = Depends(deps.get_current_active_user),
 ) -> Any:
@@ -23,7 +23,7 @@ async def retrieve(
     if not user:
         raise HTTPException(status_code=404, detail=f"User with id '{id}' not found")
     return user
-
+    
 @router.get("/")
 async def list(
     current_user: dict = Depends(deps.get_current_active_user),
