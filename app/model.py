@@ -1,9 +1,11 @@
 from datetime import datetime
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Extra
 from typing import Optional
 
-class UserSchema(BaseModel):
-    id: str = Field(..., alias='_id')
+class UserSchema(BaseModel, extra=Extra.ignore):
+    _id: str
+    sub: str
+    zoneinfo: Optional[str]
     preferred_username: Optional[str]
     picture: Optional[str]
     given_name: Optional[str]
