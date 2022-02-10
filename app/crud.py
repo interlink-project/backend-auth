@@ -56,6 +56,6 @@ async def get_or_create(collection: AsyncIOMotorCollection, user_info: dict):
         user_info["last_login"] = datetime.now()
         print("Creating user from get or create")
         return await create(collection, user_info)
-    email = user_info["email"]
+    email = db_user_info["email"]
     print(f"Returning db user for {email}")
     return {**db_user_info, **user_info}

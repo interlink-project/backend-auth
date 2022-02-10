@@ -24,10 +24,19 @@ async def retrieve(
     if not user:
         raise HTTPException(status_code=404, detail=f"User with id '{id}' not found")
     return user
-    
+
+# TODO: control access
 @router.get("", response_model=List[UserSchema])
 async def list(
     current_user: dict = Depends(deps.get_current_active_user),
     collection: AsyncIOMotorCollection = Depends(get_collection)
 ) -> Any:
     return await crud.get_all(collection)
+
+# TODO: only from localhost CORS  
+@router.post("", response_model=UserSchema)
+async def create(
+    token_data: dict,
+    collection: AsyncIOMotorCollection = Depends(get_collection)
+) -> Any:
+    return await crud.get_or_create(collection, token_data)
