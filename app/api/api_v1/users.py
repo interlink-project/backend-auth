@@ -17,7 +17,7 @@ def me(
 @router.get("/{id}", response_model=UserSchema)
 async def retrieve(
     id: str,
-    current_user: dict = Depends(deps.get_current_active_user),
+    current_user: dict = Depends(deps.get_current_user),
     collection: AsyncIOMotorCollection = Depends(get_collection)
 ) -> Any:
     user = await crud.get(collection, id)
@@ -25,7 +25,7 @@ async def retrieve(
         raise HTTPException(status_code=404, detail=f"User with id '{id}' not found")
     return user
 
-# TODO: control access
+# TODO: only allow from localhost
 @router.get("", response_model=List[UserSchema])
 async def list(
     current_user: dict = Depends(deps.get_current_active_user),
