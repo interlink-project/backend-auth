@@ -3,6 +3,7 @@ import logging
 from tenacity import after_log, before_log, retry, stop_after_attempt, wait_fixed
 from app.config import settings
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorCollection
+import requests
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -17,7 +18,7 @@ client = AsyncIOMotorClient(settings.MONGODB_URL)
     before=before_log(logger, logging.INFO),
     after=after_log(logger, logging.WARN),
 )
-def waitForDatabase() -> None:
+def wait_for_database() -> None:
     try:
         collection = client[settings.MONGODB_DATABASE][settings.COLLECTION_NAME]
         collection.find_one({"_id": "TEST"})
@@ -25,10 +26,23 @@ def waitForDatabase() -> None:
         logger.error(e)
         raise e
 
+@retry(
+    stop=stop_after_attempt(max_tries),
+    wait=wait_fixed(wait_seconds),
+    before=before_log(logger, logging.INFO),
+    after=after_log(logger, logging.WARN),
+)
+def wait_for_catalogue() -> None:
+    try:
+        requests.get(f"http://coproduction/healthcheck").json()
+    except Exception as e:
+        logger.error(e)
+        raise e
 
 def main() -> None:
     logger.info("Initializing service")
-    waitForDatabase()
+    wait_for_database()
+    wait_for_catalogue()
     logger.info("Services finished initializing")
     client.close()
 
