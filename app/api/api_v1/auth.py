@@ -27,9 +27,9 @@ async def login(
             key="redirect_on_callback",
             value=redirect_on_callback,
             httponly=True,
-            samesite='strict',
             secure=settings.PRODUCTION_MODE,
         )
+        print("Redirect on callback", redirect_on_callback, "set")
         return response
     else:
         print("user already logged in")
@@ -42,7 +42,7 @@ async def callback(request: Request, redirect_on_callback: Optional[str] = Cooki
     try:
         token = await oauth.smartcommunitylab.authorize_access_token(request)
         user_info = decode_token(token["access_token"])
-        await crud.login(collection, user_info)
+        await crud.get_or_create(collection, user_info)
 
         response = RedirectResponse(redirect_on_callback)        
         
