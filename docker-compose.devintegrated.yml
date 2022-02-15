@@ -9,10 +9,9 @@ services:
       - .env
       - .secrets
     environment:
+      - PROTOCOL=http://
       - SERVER_NAME=${DOMAIN?Variable not set}
-      - SERVER_HOST=http://${DOMAIN?Variable not set}/auth
       - PORT=${PORT}
-      # behind proxy
       - BASE_PATH=/auth
       - MONGODB_URL=mongodb://user:userpass@mongodb:27017/data?retryWrites=true&w=majority
 

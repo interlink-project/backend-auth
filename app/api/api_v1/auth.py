@@ -15,26 +15,27 @@ router = APIRouter()
 @router.get("/login")
 async def login(
     request: Request,
-    redirect_on_callback: str = f"{settings.BASE_PATH}/docs",
+    redirect_on_callback: str = f"{settings.COMPLETE_SERVER_NAME}/docs",
     current_user: Union[dict, None] = Depends(deps.get_current_user),
 ):
-    
+    print(f"{settings.COMPLETE_SERVER_NAME}/docs")
     if not current_user:
         # redirect_uri = request.url_for('callback')
-        redirect_uri = f"{settings.SERVER_HOST}/callback"
+        redirect_uri = f"{settings.COMPLETE_SERVER_NAME}/callback"
         response = await oauth.smartcommunitylab.authorize_redirect(request, redirect_uri)
         response.set_cookie(
             key="redirect_on_callback",
             value=redirect_on_callback,
             httponly=True,
-            # TODO: False if dev, true if prod
-            secure=False
+            samesite='strict',
+            secure=settings.PRODUCTION_MODE,
         )
         return response
     else:
         print("user already logged in")
         # if user already logged in, redirect to redirect_on_callback
         return RedirectResponse(redirect_on_callback)
+
 
 @router.get("/callback")
 async def callback(request: Request, redirect_on_callback: Optional[str] = Cookie(None), collection: AsyncIOMotorCollection = Depends(get_collection)):
@@ -50,8 +51,8 @@ async def callback(request: Request, redirect_on_callback: Optional[str] = Cooki
             value=token["access_token"],
             expires=token["expires_in"],
             httponly=True,
-            # TODO: False if dev, true if prod
-            secure=False
+            samesite='strict',
+            secure=settings.PRODUCTION_MODE,
         )
         
         response.delete_cookie(key="redirect_on_callback")

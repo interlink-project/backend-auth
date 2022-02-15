@@ -9,10 +9,6 @@ import os
 
 class Settings(BaseSettings):
     SECRET_KEY: str = secrets.token_urlsafe(32)
-    # 60 minutes * 24 hours * 8 days = 8 days
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 8
-    SERVER_NAME: str
-    SERVER_HOST: AnyHttpUrl
     # BACKEND_CORS_ORIGINS is a JSON-formatted list of origins
     BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = []
 
@@ -32,9 +28,13 @@ class Settings(BaseSettings):
     CLIENT_SECRET: str
     SERVER_METADATA_URL: str
 
+    PROTOCOL: str
+    SERVER_NAME: str
+    BASE_PATH: str
+    COMPLETE_SERVER_NAME: AnyHttpUrl = os.getenv("PROTOCOL") + os.getenv("SERVER_NAME") + os.getenv("BASE_PATH")
     API_V1_STR: str = "/api/v1"
     
-    PROJECT_NAME = "Auth API"
-    BASE_PATH: str = ""
+    PRODUCTION_MODE : bool =  "https" in os.getenv("PROTOCOL")
+    PROJECT_NAME : str = "Auth API"
 
 settings = Settings()

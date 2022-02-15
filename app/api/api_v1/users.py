@@ -4,17 +4,17 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.database import AsyncIOMotorCollection, get_collection
 from app import deps, crud
-from app.model import UserSchema
+from app.model import UserOutSchema
 
 router = APIRouter()
 
-@router.get("/me", response_model=UserSchema)
+@router.get("/me", response_model=UserOutSchema)
 def me(
     current_user: dict = Depends(deps.get_current_active_user),
 ) -> Any:
     return current_user
 
-@router.get("/{id}", response_model=UserSchema)
+@router.get("/{id}", response_model=UserOutSchema)
 async def retrieve(
     id: str,
     current_user: dict = Depends(deps.get_current_user),
@@ -26,7 +26,7 @@ async def retrieve(
     return user
 
 # TODO: only allow from localhost
-@router.get("", response_model=List[UserSchema])
+@router.get("", response_model=List[UserOutSchema])
 async def list(
     current_user: dict = Depends(deps.get_current_active_user),
     collection: AsyncIOMotorCollection = Depends(get_collection)
@@ -34,7 +34,7 @@ async def list(
     return await crud.get_all(collection)
 
 # TODO: only from localhost CORS  
-@router.post("", response_model=UserSchema)
+@router.post("", response_model=UserOutSchema)
 async def create(
     token_data: dict,
     collection: AsyncIOMotorCollection = Depends(get_collection)

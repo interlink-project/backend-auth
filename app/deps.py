@@ -34,8 +34,7 @@ async def get_current_user(
             return await crud.get_or_create(collection,token_info)
         return None
     except Exception as e:
-        print(str(e))
-        return None
+        raise e
 
 def get_current_active_user(
     current_user: dict = Depends(get_current_user),

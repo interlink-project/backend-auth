@@ -46,3 +46,10 @@ app.include_router(usersrouter, prefix=f"{settings.BASE_PATH}{settings.API_V1_ST
 
 from starlette.middleware.sessions import SessionMiddleware
 app.add_middleware(SessionMiddleware, secret_key=settings.SECRET_KEY)
+
+###################
+# Staticfiles
+###################
+
+from fastapi.staticfiles import StaticFiles
+app.mount(f"{settings.BASE_PATH}/static", StaticFiles(directory="static"), name="static")
