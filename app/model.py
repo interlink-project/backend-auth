@@ -18,7 +18,7 @@ class UserOutSchema(UserSchema, extra=Extra.ignore):
     
     @root_validator(pre=True)
     def update_picture_uri_if_static(cls, values):
-        if "/static" in values["picture"]:
+        if "picture" in values and values["picture"] and "/static" in values["picture"]:
             newValues = {**values}
             newValues["picture"] = settings.COMPLETE_SERVER_NAME + newValues["picture"]
             return newValues
