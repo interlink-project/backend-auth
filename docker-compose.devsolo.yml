@@ -1,7 +1,7 @@
 version: "3.3"
 services:
   auth:
-    image: 'authdev:${TAG-latest}'
+    image: 'authdev'
     container_name: auth-solo
     volumes:
       - .:/app
