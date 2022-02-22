@@ -12,7 +12,8 @@ class UserSchema(BaseModel, extra=Extra.ignore):
     email: str
     zoneinfo: Optional[str]
     locale: Optional[str]
-
+    access_token: str
+    
 class UserOutSchema(UserSchema, extra=Extra.ignore):
     given_name: Optional[str]
     

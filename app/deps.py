@@ -1,7 +1,6 @@
 from typing import Generator
 
 from fastapi import Depends, HTTPException, Request
-from app.authentication import decode_token
 from app import crud
 from app.database import AsyncIOMotorCollection, get_collection
 
@@ -30,8 +29,7 @@ async def get_current_user(
     try:
         token = get_token_in_cookie(request) or get_token_in_header(request)
         if token:
-            token_info = decode_token(token)
-            return await crud.get_or_create(collection,token_info)
+            return await crud.get_or_create(collection, token)
         return None
     except Exception as e:
         raise e

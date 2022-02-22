@@ -5,7 +5,7 @@ from fastapi.responses import RedirectResponse
 from starlette.requests import Request
 
 from app import deps, crud
-from app.authentication import decode_token, oauth
+from app.authentication import oauth
 from app.config import settings
 from app.database import AsyncIOMotorCollection, get_collection
 
@@ -41,8 +41,7 @@ async def login(
 async def callback(request: Request, redirect_on_callback: Optional[str] = Cookie(None), collection: AsyncIOMotorCollection = Depends(get_collection)):
     try:
         token = await oauth.smartcommunitylab.authorize_access_token(request)
-        user_info = decode_token(token["access_token"])
-        await crud.get_or_create(collection, user_info)
+        await crud.get_or_create(collection, token["access_token"])
 
         response = RedirectResponse(redirect_on_callback)        
         

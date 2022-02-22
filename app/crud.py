@@ -5,6 +5,7 @@ from fastapi.encoders import jsonable_encoder
 from app.database import AsyncIOMotorCollection
 from app.model import UserSchema
 from app.config import settings
+from app.authentication import decode_token
 
 async def get(collection: AsyncIOMotorCollection, id: str):
     return await collection.find_one({
@@ -50,11 +51,12 @@ async def create(collection: AsyncIOMotorCollection, user_info: dict):
 async def delete(collection: AsyncIOMotorCollection, id: str):
     return await collection.delete_one({"_id": id})
 
-async def get_or_create(collection: AsyncIOMotorCollection, user_info: dict):
+async def get_or_create(collection: AsyncIOMotorCollection, token):
+    user_info : dict = decode_token(token)
     user_id = user_info["sub"]
     db_user_info = await get(collection, user_id)
     if not db_user_info:
         print("Creating user from get_or_create")
         db_user_info = await create(collection=collection, user_info=user_info)
     print("Returning db user from get_or_create", db_user_info)
-    return { **user_info, **db_user_info}
+    return { **user_info, **db_user_info, "access_token": token}
