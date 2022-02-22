@@ -12,11 +12,11 @@ class UserSchema(BaseModel, extra=Extra.ignore):
     email: str
     zoneinfo: Optional[str]
     locale: Optional[str]
-    access_token: str
     
 class UserOutSchema(UserSchema, extra=Extra.ignore):
     given_name: Optional[str]
-    
+    access_token: Optional[str]
+
     @root_validator(pre=True)
     def update_picture_uri_if_static(cls, values):
         if "picture" in values and values["picture"] and "/static" in values["picture"]:
