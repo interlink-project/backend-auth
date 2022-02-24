@@ -15,7 +15,6 @@ class UserSchema(BaseModel, extra=Extra.ignore):
     
 class UserOutSchema(UserSchema, extra=Extra.ignore):
     given_name: Optional[str]
-    access_token: Optional[str]
 
     @root_validator(pre=True)
     def update_picture_uri_if_static(cls, values):

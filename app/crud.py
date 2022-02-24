@@ -59,4 +59,4 @@ async def get_or_create(collection: AsyncIOMotorCollection, token):
         print("Creating user from get_or_create")
         db_user_info = await create(collection=collection, user_info=user_info)
     print("Returning db user from get_or_create", db_user_info)
-    return { **user_info, **db_user_info, "access_token": token}
+    return { **user_info, **db_user_info}
