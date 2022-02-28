@@ -41,10 +41,6 @@ async def create(collection: AsyncIOMotorCollection, user_info: dict):
     user = jsonable_encoder(user)
     user["_id"] = user_id
     db_asset = await collection.insert_one(user)
-    print("SENDING TO COPROD")
-    requests.post(f"http://coproduction/api/v1/users", json={
-        "id": user_id
-    })
     return await get(collection, db_asset.inserted_id)
 
 
@@ -57,6 +53,13 @@ async def get_or_create(collection: AsyncIOMotorCollection, token):
     db_user_info = await get(collection, user_id)
     if not db_user_info:
         print("Creating user from get_or_create")
-        db_user_info = await create(collection=collection, user_info=user_info)
+        try:
+            print("SENDING TO COPROD")
+            requests.post(f"http://coproduction/api/v1/users", json={
+                "id": user_id
+            }).json()
+            db_user_info = await create(collection=collection, user_info=user_info)
+        except Exception as e:
+            print(e)
     print("Returning db user from get_or_create", db_user_info)
     return { **user_info, **db_user_info}
