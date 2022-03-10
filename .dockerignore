@@ -1,0 +1,7 @@
+**/static/*
+**/*.pyc
+docker-*.yml
+Dockerfile*
+Makefile
+.env*
+README*
