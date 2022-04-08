@@ -19,8 +19,7 @@ def get_token_in_header(request):
 def get_current_token(
     request: Request
 ) -> dict:
-        state = request.state._state
-        return state["token"]
+    return get_token_in_cookie(request) or get_token_in_header(request)
 
 async def get_current_user(
     request: Request,

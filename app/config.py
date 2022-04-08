@@ -26,6 +26,7 @@ class Settings(BaseSettings):
 
     CLIENT_ID: str
     CLIENT_SECRET: str
+    SERVER_URL: str
     SERVER_METADATA_URL: str
 
     PROTOCOL: str

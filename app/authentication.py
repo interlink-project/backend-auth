@@ -3,7 +3,7 @@ from app.config import settings
 from authlib.integrations.starlette_client import OAuth
 from jwt import PyJWKClient
 
-url = "https://aac.platform.smartcommunitylab.it/jwk"
+url = "https://aac.platform.smartcommunitylab.it"
 
 oauth = OAuth()
 oauth.register(
@@ -17,7 +17,7 @@ oauth.register(
 )
 
 def decode_token(jwtoken):
-    jwks_client = PyJWKClient(url)
+    jwks_client = PyJWKClient(url + "/jwk")
     signing_key = jwks_client.get_signing_key_from_jwt(jwtoken)
     data = jwt.decode(
         jwtoken,

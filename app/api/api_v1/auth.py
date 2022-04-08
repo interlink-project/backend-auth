@@ -5,9 +5,10 @@ from fastapi.responses import RedirectResponse
 from starlette.requests import Request
 
 from app import deps, crud
-from app.authentication import oauth
+from app.authentication import oauth, url
 from app.config import settings
 from app.database import AsyncIOMotorCollection, get_collection
+from urllib.parse import quote_plus, urlencode
 
 router = APIRouter()
 
@@ -23,13 +24,7 @@ async def login(
         # redirect_uri = request.url_for('callback')
         redirect_uri = f"{settings.COMPLETE_SERVER_NAME}/callback"
         response = await oauth.smartcommunitylab.authorize_redirect(request, redirect_uri)
-        response.set_cookie(
-            key="redirect_on_callback",
-            value=redirect_on_callback,
-            httponly=True,
-            secure=settings.PRODUCTION_MODE,
-        )
-        print("Redirect on callback", redirect_on_callback, "set")
+        request.session["redirect_on_callback"] = redirect_on_callback
         return response
     else:
         print("user already logged in")
@@ -38,13 +33,13 @@ async def login(
 
 
 @router.get("/callback")
-async def callback(request: Request, redirect_on_callback: Optional[str] = Cookie(None), collection: AsyncIOMotorCollection = Depends(get_collection)):
+async def callback(request: Request, collection: AsyncIOMotorCollection = Depends(get_collection)):
     try:
         token = await oauth.smartcommunitylab.authorize_access_token(request)
         await crud.get_or_create(collection, token["access_token"])
-
-        response = RedirectResponse(redirect_on_callback)        
         
+        response = RedirectResponse(request.session.get("redirect_on_callback", "/noredirect"),)        
+        request.session["id_token"] = token["id_token"]
         response.set_cookie(
             key="auth_token",
             value=token["access_token"],
@@ -54,8 +49,6 @@ async def callback(request: Request, redirect_on_callback: Optional[str] = Cooki
             domain=settings.SERVER_NAME,
             secure=settings.PRODUCTION_MODE,
         )
-        
-        response.delete_cookie(key="redirect_on_callback")
         # user = await oauth.smartcommunitylab.parse_id_token(request, token)
         # print(user)
         return response
@@ -64,8 +57,16 @@ async def callback(request: Request, redirect_on_callback: Optional[str] = Cooki
 
 
 @router.get("/logout")
-async def logout(redirect_on_callback: str = "/"):
-    response = RedirectResponse(url=redirect_on_callback)
+async def logout(request: Request, redirect_on_callback: str = settings.COMPLETE_SERVER_NAME):
+    url = settings.SERVER_URL + "/endsession?" + urlencode(
+            {
+                "id_token_hint": request.session.get("id_token", None),
+                "post_logout_redirect_uri": redirect_on_callback
+            },
+            
+        )
+    print(url)
+    response = RedirectResponse(url
+    )
     response.delete_cookie(key="auth_token")
-    # TODO: get token and call revocation
     return response
