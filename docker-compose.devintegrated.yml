@@ -14,6 +14,10 @@ services:
       - PORT=${PORT}
       - BASE_PATH=/auth
       - MONGODB_URL=mongodb://user:userpass@mongodb:27017/data?retryWrites=true&w=majority
+    logging:
+      driver: "json-file"
+      options:
+        tag: "{{.ImageName}}|{{.Name}}|{{.ImageFullID}}|{{.FullID}}"
 
     build:
       context: .
@@ -28,6 +32,10 @@ services:
         set}-auth.loadbalancer.server.port=${PORT}
     networks:
       - traefik-public
+    logging:
+      driver: "json-file"
+      options:
+        tag: "{{.ImageName}}|{{.Name}}|{{.ImageFullID}}|{{.FullID}}"
 
 networks:
   traefik-public:
