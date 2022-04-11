@@ -57,16 +57,21 @@ async def callback(request: Request, collection: AsyncIOMotorCollection = Depend
 
 
 @router.get("/logout")
-async def logout(request: Request, redirect_on_callback: str = settings.COMPLETE_SERVER_NAME):
+async def logout(request: Request, redirect_on_callback: str):
+    request.session["redirect_on_callback"] = redirect_on_callback
     url = settings.SERVER_URL + "/endsession?" + urlencode(
             {
                 "id_token_hint": request.session.get("id_token", None),
-                "post_logout_redirect_uri": redirect_on_callback
+                "post_logout_redirect_uri": settings.COMPLETE_SERVER_NAME + "/logout_callback"
             },
             
         )
     print(url)
-    response = RedirectResponse(url
-    )
+    return RedirectResponse(url)
+
+@router.get("/logout_callback")
+async def logout(request: Request):
+    url = request.session.get("redirect_on_callback", settings.COMPLETE_SERVER_NAME)
+    response = RedirectResponse(url)
     response.delete_cookie(key="auth_token")
     return response
