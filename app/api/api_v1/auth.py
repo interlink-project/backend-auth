@@ -19,7 +19,6 @@ async def login(
     redirect_on_callback: str = f"{settings.COMPLETE_SERVER_NAME}/docs",
     current_user: Union[dict, None] = Depends(deps.get_current_user),
 ):
-    print(f"{settings.COMPLETE_SERVER_NAME}/docs")
     if not current_user:
         # redirect_uri = request.url_for('callback')
         redirect_uri = f"{settings.COMPLETE_SERVER_NAME}/callback"
@@ -38,8 +37,10 @@ async def callback(request: Request, collection: AsyncIOMotorCollection = Depend
         token = await oauth.smartcommunitylab.authorize_access_token(request)
         await crud.get_or_create(collection, token["access_token"])
         
-        response = RedirectResponse(request.session.get("redirect_on_callback", "/noredirect"),)        
+        response = RedirectResponse(request.session.get("redirect_on_callback", "/noredirect"))   
         request.session["id_token"] = token["id_token"]
+        del request.session["redirect_on_callback"]
+
         response.set_cookie(
             key="auth_token",
             value=token["access_token"],
@@ -49,6 +50,7 @@ async def callback(request: Request, collection: AsyncIOMotorCollection = Depend
             domain=settings.SERVER_NAME,
             secure=settings.PRODUCTION_MODE,
         )
+
         # user = await oauth.smartcommunitylab.parse_id_token(request, token)
         # print(user)
         return response
@@ -70,8 +72,9 @@ async def logout(request: Request, redirect_on_callback: str):
     return RedirectResponse(url)
 
 @router.get("/logout_callback")
-async def logout(request: Request):
-    url = request.session.get("redirect_on_callback", settings.COMPLETE_SERVER_NAME)
-    response = RedirectResponse(url)
+async def logout_callback(request: Request):
+    response = RedirectResponse(request.session.get("redirect_on_callback", "/noredirect"))        
+    del request.session["redirect_on_callback"]
+    del request.session["id_token"]
     response.delete_cookie(key="auth_token")
     return response
