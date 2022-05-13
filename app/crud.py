@@ -60,7 +60,7 @@ async def get_or_create(collection: AsyncIOMotorCollection, token):
         print("SENDING TO COPROD")
         requests.post(f"http://coproduction/api/v1/users", json={
             "id": user_id
-        }).json()
+        }, timeout=3).json()
     except:
         pass
     print("Returning db user from get_or_create", db_user_info)

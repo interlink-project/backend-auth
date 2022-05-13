@@ -1,0 +1,2 @@
+FIXED
+• Auth cookie removed on logout

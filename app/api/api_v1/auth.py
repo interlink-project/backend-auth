@@ -9,6 +9,7 @@ from app.authentication import oauth, url
 from app.config import settings
 from app.database import AsyncIOMotorCollection, get_collection
 from urllib.parse import quote_plus, urlencode
+import datetime
 
 router = APIRouter()
 
@@ -76,5 +77,16 @@ async def logout_callback(request: Request):
     response = RedirectResponse(request.session.get("redirect_on_callback", "/noredirect"))        
     del request.session["redirect_on_callback"]
     del request.session["id_token"]
-    response.delete_cookie(key="auth_token")
+
+    # issue of response.delete_cookie(key="auth_token") => https://github.com/tiangolo/fastapi/issues/2268
+    expires = datetime.datetime.utcnow() + datetime.timedelta(seconds=1)
+    response.set_cookie(
+            key="auth_token",
+            value="",
+            expires=expires.strftime("%a, %d %b %Y %H:%M:%S GMT"),
+            httponly=True,
+            samesite='strict',
+            domain=settings.SERVER_NAME,
+            secure=settings.PRODUCTION_MODE,
+        )
     return response
