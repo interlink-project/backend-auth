@@ -9,7 +9,7 @@ class UserSchema(BaseModel, extra=Extra.ignore):
     picture: Optional[str]
     full_name: Optional[str]
     last_login: datetime = datetime.now()
-    email: str
+    email: Optional[str]
     zoneinfo: Optional[str]
     locale: Optional[str]
     
