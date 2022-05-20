@@ -1,2 +1,2 @@
 FIXED
-• Auth cookie removed on logout
+• Email not required on user model
