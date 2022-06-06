@@ -1,2 +1,4 @@
-FIXED
-• Email not required on user model
+v1.0.3
+
+IMPROVED
+• Do not send data to coproduction microservice on user creation => completely standalone component
