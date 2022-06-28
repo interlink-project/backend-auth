@@ -36,7 +36,7 @@ async def login(
 async def callback(request: Request, collection: AsyncIOMotorCollection = Depends(get_collection)):
     try:
         token = await oauth.smartcommunitylab.authorize_access_token(request)
-        await crud.get_or_create(collection, token["access_token"])
+        await crud.get_or_create(collection, token["access_token"], True)
         
         response = RedirectResponse(request.session.get("redirect_on_callback", "/noredirect"))   
         request.session["id_token"] = token["id_token"]
