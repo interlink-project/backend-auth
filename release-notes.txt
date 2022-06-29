@@ -1,4 +1,4 @@
-v1.0.3
+v1.0.4
 
-IMPROVED
-• Do not send data to coproduction microservice on user creation => completely standalone component
+FIXED
+• Update last_login of user on login
