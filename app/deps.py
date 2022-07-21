@@ -28,7 +28,7 @@ async def get_current_user(
     try:
         token = get_token_in_cookie(request) or get_token_in_header(request)
         if token:
-            return await crud.get_or_create(collection, token, False)
+            return await crud.update_or_create(collection, token, False)
         return None
     except Exception as e:
         raise e

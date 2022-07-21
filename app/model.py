@@ -13,7 +13,7 @@ class UserSchema(BaseModel, extra=Extra.ignore):
     zoneinfo: Optional[str]
     locale: Optional[str]
     
-class UserOutSchema(UserSchema, extra=Extra.ignore):
+class UserOutSchema(UserSchema, extra=Extra.allow):
     given_name: Optional[str]
 
     @root_validator(pre=True)
