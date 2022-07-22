@@ -64,7 +64,7 @@ async def update_or_create(collection: AsyncIOMotorCollection, token, update_las
     user_id = user_info["sub"]
     db_user_info = await get(collection, user_id)
     if not db_user_info:
-        print("Creating user from get_or_create")
+        print("Creating user from update_or_create")
         db_user_info = await create(collection=collection, user_info=user_info)
     else:
         if update_last_login:
@@ -72,5 +72,5 @@ async def update_or_create(collection: AsyncIOMotorCollection, token, update_las
                 "last_login": datetime.now()
             })
 
-    print("Returning db user from get_or_create", db_user_info)
+    print("Returning db user from update_or_create", db_user_info)
     return {**user_info, **db_user_info}
