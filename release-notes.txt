@@ -1,4 +1,1 @@
-v1.0.4
-
-FIXED
-• Update last_login of user on login
+v1.0.5

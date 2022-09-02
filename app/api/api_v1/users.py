@@ -24,6 +24,8 @@ async def retrieve(
         raise HTTPException(status_code=404, detail=f"User with id '{id}' not found")
     return user
 
+UPDATABLE_KEYS = ["additionalEmails"]
+
 @router.put("/{id}", response_model=UserOutSchema)
 async def update(
     id: str,
@@ -36,7 +38,7 @@ async def update(
     
     keys = payload.keys()
     for key in keys:
-        if key not in ["additionalEmails"]:
+        if key not in UPDATABLE_KEYS:
             del payload[key]
             
     await crud.update(collection, id, payload)
